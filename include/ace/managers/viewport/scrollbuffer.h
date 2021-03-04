@@ -51,17 +51,23 @@ extern "C" {
 
 typedef struct _tScrollBufferManager {
 	tVpManager sCommon;
-	tCameraManager *pCamera; ///< Quick ref to camera
+	tCameraManager *pCamera;       ///< Quick ref to camera
 
-	tBitMap *pFront;         ///< Front buffer in double buffering
-	tBitMap *pBack;          ///< Back buffer in double buffering
-	tCopBlock *pStartBlock;  ///< Initial data fetch
-	tCopBlock *pBreakBlock;  ///< Bitplane ptr reset
-	tUwCoordYX uBfrBounds;   ///< Real bounds of buffer (includes height reserved for x-scroll)
-	UWORD uwBmAvailHeight;   ///< Avail height of buffer to blit (excludes height reserved for x-scroll)
-	UWORD uwVpHeightPrev;    ///< Prev height of related VPort, used to force refresh on change
-	UWORD uwModulo;          ///< Bitplane modulo
-	UBYTE ubFlags;
+	tBitMap *pFront;               ///< Front buffer in double buffering
+	tBitMap *pBack;                ///< Back buffer in double buffering
+	union {
+		tCopBlock *pStartBlock;    ///< Initial data fetch
+		UWORD uwCopperOffsetStart; ///< Start offset on copperlist in COP_RAW mode.
+	} copStart;                    ///< Select which field is valid based on SCROLLBUFFER_FLAG_COPLIST_RAW
+	union {
+		tCopBlock *pBreakBlock;    ///< Bitplane ptr reset
+		UWORD uwCopperOffsetBreak; ///< Break offset on copperlist in COP_RAW mode.
+	} copBreak;                    ///< Select which field is valid based on SCROLLBUFFER_FLAG_COPLIST_RAW
+	tUwCoordYX uBfrBounds;         ///< Real bounds of buffer (includes height reserved for x-scroll)
+	UWORD uwBmAvailHeight;         ///< Avail height of buffer to blit (excludes height reserved for x-scroll)
+	UWORD uwVpHeightPrev;          ///< Prev height of related VPort, used to force refresh on change
+	UWORD uwModulo;                ///< Bitplane modulo
+	UBYTE ubFlags;                 ///< Read only. See SCROLLBUFFER_FLAG_*.
 } tScrollBufferManager;
 
 /* Globals */
@@ -95,6 +101,10 @@ void scrollBufferBlitMask(
 	WORD wWidth, WORD wHeight,
 	UWORD *pMsk
 );
+
+UBYTE scrollBufferGetRawCopperlistInstructionCountStart(UBYTE ubBpp);
+
+UBYTE scrollBufferGetRawCopperlistInstructionCountBreak(UBYTE ubBpp);
 
 #endif // AMIGA
 
