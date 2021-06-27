@@ -20,6 +20,9 @@ tCopperUlong FAR REGPTR g_pSprFetch = (tCopperUlong REGPTR)(
 tCopperUlong FAR REGPTR g_pCopLc = (tCopperUlong REGPTR)(
 	CUSTOM_BASE + offsetof(tCustom, cop1lc)
 );
+tCopperUlong FAR REGPTR g_pCop2Lc = (tCopperUlong REGPTR)(
+	CUSTOM_BASE + offsetof(tCustom, cop2lc)
+);
 
 tCia FAR REGPTR g_pCia[CIA_COUNT] = {(tCia*)0xBFE001, (tCia*)0xBFD000};
 

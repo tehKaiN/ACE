@@ -170,11 +170,6 @@ void tileBufferDestroy(tTileBufferManager *pManager);
  */
 void tileBufferProcess(tTileBufferManager *pManager);
 
-void tileBufferReset(
-	tTileBufferManager *pManager, UWORD uwTileX, UWORD uwTileY,
-	UBYTE ubBitmapFlags, UBYTE isDblBuf
-);
-
 /**
  * Redraws tiles on whole screen.
  * Use for init or something like that, as it's slooooooooow.
@@ -231,6 +226,14 @@ UBYTE tileBufferIsTileOnBuffer(
 void tileBufferSetTile(
 	tTileBufferManager *pManager, UWORD uwX, UWORD uwY, UWORD uwIdx
 );
+
+static inline UBYTE tileBufferGetRawCopperlistInstructionCountStart(UBYTE ubBpp) {
+    return scrollBufferGetRawCopperlistInstructionCountStart(ubBpp);
+}
+
+static inline UBYTE tileBufferGetRawCopperlistInstructionCountBreak(UBYTE ubBpp) {
+    return scrollBufferGetRawCopperlistInstructionCountBreak(ubBpp);
+}
 
 #endif // AMIGA
 

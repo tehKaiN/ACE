@@ -175,6 +175,7 @@ extern tCustom FAR REGPTR g_pCustom;
 extern tCopperUlong FAR REGPTR g_pSprFetch;
 extern tCopperUlong FAR REGPTR g_pBplFetch;
 extern tCopperUlong FAR REGPTR g_pCopLc;
+extern tCopperUlong FAR REGPTR g_pCop2Lc;
 
 extern tCia FAR REGPTR g_pCia[CIA_COUNT];
 

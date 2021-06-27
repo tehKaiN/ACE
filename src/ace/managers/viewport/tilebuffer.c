@@ -54,11 +54,17 @@ void tileBufferQueueProcess(tTileBufferManager *pManager) {
 	}
 }
 
+void tileBufferReset(
+	tTileBufferManager *pManager, UWORD uwTileX, UWORD uwTileY,
+	UBYTE ubBitmapFlags, UBYTE isDblBuf, UWORD uwCoplistOffStart, UWORD uwCoplistOffBreak
+);
+
 tTileBufferManager *tileBufferCreate(void *pTags, ...) {
 	va_list vaTags;
 	tTileBufferManager *pManager;
 	UWORD uwTileX, uwTileY;
 	UBYTE ubBitmapFlags, isDblBuf;
+	UWORD uwCoplistOffStart, uwCoplistOffBreak;
 
 	logBlockBegin("tileBufferCreate(pTags: %p, ...)", pTags);
 	va_start(vaTags, pTags);
@@ -106,7 +112,9 @@ tTileBufferManager *tileBufferCreate(void *pTags, ...) {
 	pManager->pTileData = 0;
 	ubBitmapFlags = tagGet(pTags, vaTags, TAG_TILEBUFFER_BITMAP_FLAGS, BMF_CLEAR);
 	isDblBuf = tagGet(pTags, vaTags, TAG_TILEBUFFER_IS_DBLBUF, 0);
-	tileBufferReset(pManager, uwTileX, uwTileY, ubBitmapFlags, isDblBuf);
+	uwCoplistOffStart = tagGet(pTags, vaTags, TAG_TILEBUFFER_COPLIST_OFFSET_START, -1);
+	uwCoplistOffBreak = tagGet(pTags, vaTags, TAG_TILEBUFFER_COPLIST_OFFSET_BREAK, -1);
+	tileBufferReset(pManager, uwTileX, uwTileY, ubBitmapFlags, isDblBuf, uwCoplistOffStart, uwCoplistOffBreak);
 
 	pManager->ubQueueSize = tagGet(
 		pTags, vaTags, TAG_TILEBUFFER_REDRAW_QUEUE_LENGTH, 0
@@ -179,7 +187,7 @@ void tileBufferDestroy(tTileBufferManager *pManager) {
 
 void tileBufferReset(
 	tTileBufferManager *pManager, UWORD uwTileX, UWORD uwTileY,
-	UBYTE ubBitmapFlags, UBYTE isDblBuf
+	UBYTE ubBitmapFlags, UBYTE isDblBuf, UWORD uwCoplistOffStart, UWORD uwCoplistOffBreak
 ) {
 	logBlockBegin(
 		"tileBufferReset(pManager: %p, uwTileX: %hu, uwTileY: %hu, ubBitmapFlags: %hhu, isDblBuf: %hhu)",
@@ -218,6 +226,8 @@ void tileBufferReset(
 			TAG_SCROLLBUFFER_BOUND_HEIGHT, uwTileY << ubTileShift,
 			TAG_SCROLLBUFFER_IS_DBLBUF, isDblBuf,
 			TAG_SCROLLBUFFER_BITMAP_FLAGS, ubBitmapFlags,
+			TAG_SCROLLBUFFER_COPLIST_OFFSET_START, uwCoplistOffStart,
+			TAG_SCROLLBUFFER_COPLIST_OFFSET_BREAK, uwCoplistOffBreak,
 		TAG_DONE);
 	}
 	else {
